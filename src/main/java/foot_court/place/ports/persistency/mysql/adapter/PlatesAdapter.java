@@ -19,22 +19,4 @@ public class PlatesAdapter implements IPlatesPersistencePort {
         PlateEntity plateEntity = plateMapper.toEntity(plate);
         platesRepository.save(plateEntity);
     }
-
-    @Override
-    public void updatePlate(Plate plate) {
-        PlateEntity existingEntity = platesRepository.findById(plate.getId()).orElse(null);
-        if (existingEntity == null) {
-            throw new IllegalArgumentException("Plate not found with ID: " + plate.getId());
-        }
-        existingEntity.setDescription(plate.getDescription());
-        existingEntity.setPrice(plate.getPrice());
-        platesRepository.save(existingEntity);
-    }
-
-    @Override
-    public Plate findPlateById(Long id) {
-        return platesRepository.findById(id)
-                .map(plateMapper::toPlate)
-                .orElse(null);
-    }
 }

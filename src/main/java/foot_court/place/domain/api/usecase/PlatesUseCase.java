@@ -18,16 +18,6 @@ public class PlatesUseCase implements IPlatesServicePort {
         platesPersistencePort.savePlate(plate);
     }
 
-    @Override
-    public void updatePlate(Plate plate) {
-        validateInfo(plate);
-        Plate existingPlate = platesPersistencePort.findPlateById(plate.getId());
-        if (existingPlate == null) {
-            throw new IllegalArgumentException("Plate not found with ID: " + plate.getId());
-        }
-        platesPersistencePort.updatePlate(plate);
-    }
-
     private void validateInfo(Plate plate) {
         if (plate.getPrice() <= 0) {
             throw new IllegalArgumentException("Plate price must be greater than 0");

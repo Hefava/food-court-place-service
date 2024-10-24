@@ -3,9 +3,7 @@ package foot_court.place.ports.application.http.controller;
 import foot_court.place.domain.api.IPlatesServicePort;
 import foot_court.place.domain.model.Plate;
 import foot_court.place.ports.application.http.dto.CreatePlateRequest;
-import foot_court.place.ports.application.http.dto.UpdatePlateRequest;
 import foot_court.place.ports.application.http.mapper.CreatePlateRequestMapper;
-import foot_court.place.ports.application.http.mapper.UpdatePlateRequestMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -24,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 public class PlatesController {
     private final IPlatesServicePort platesServicePort;
     private final CreatePlateRequestMapper createPlateRequestMapper;
-    private final UpdatePlateRequestMapper updatePlateRequestMapper;
 
     @Operation(summary = "Register new plate", description = "Register a new plate in the system")
     @ApiResponses(value = {
@@ -38,13 +35,5 @@ public class PlatesController {
         Plate plate = createPlateRequestMapper.toPlate(request);
         platesServicePort.createPlate(plate);
         return new ResponseEntity<>(HttpStatus.CREATED);
-    }
-
-    @PutMapping("/update-plate")
-    public ResponseEntity<Void> updatePlate(
-            @RequestBody @Parameter(required = true) UpdatePlateRequest request) {
-        Plate plate = updatePlateRequestMapper.toPlate(request);
-        platesServicePort.updatePlate(plate);
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
