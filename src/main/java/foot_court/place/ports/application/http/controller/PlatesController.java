@@ -2,6 +2,7 @@ package foot_court.place.ports.application.http.controller;
 
 import foot_court.place.domain.api.IPlatesServicePort;
 import foot_court.place.domain.model.Plate;
+import foot_court.place.domain.utils.TokenHolder;
 import foot_court.place.ports.application.http.dto.CreatePlateRequest;
 import foot_court.place.ports.application.http.dto.UpdatePlateRequest;
 import foot_court.place.ports.application.http.mapper.CreatePlateRequestMapper;
@@ -45,6 +46,16 @@ public class PlatesController {
             @RequestBody @Parameter(required = true) UpdatePlateRequest request) {
         Plate plate = updatePlateRequestMapper.toPlate(request);
         platesServicePort.updatePlate(plate);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/change-availability/{plateID}")
+    public ResponseEntity<Void> changeAvailability(
+            @RequestHeader("Authorization") @Parameter(required = true) String token,
+            @PathVariable @Parameter(required = true) Long plateID) {
+        TokenHolder.setToken(token);
+        platesServicePort.changeAvailability(plateID);
+        TokenHolder.clear();
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

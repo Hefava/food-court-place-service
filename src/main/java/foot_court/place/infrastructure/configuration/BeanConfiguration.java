@@ -35,7 +35,7 @@ public class BeanConfiguration {
 
     @Bean
     public IPlatesServicePort platesPersistencePort() {
-        return new PlatesUseCase(platesPersistencePort);
+        return new PlatesUseCase(platesPersistencePort, userPersistencePort, restaurantsPersistencePort);
     }
 
     @Bean

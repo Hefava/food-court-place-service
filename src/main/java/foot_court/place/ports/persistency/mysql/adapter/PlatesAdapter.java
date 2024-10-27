@@ -8,6 +8,8 @@ import foot_court.place.ports.persistency.mysql.repository.PlatesRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import static foot_court.place.domain.utils.PlateUtils.PLATE_NOT_FOUND;
+
 @Component
 @RequiredArgsConstructor
 public class PlatesAdapter implements IPlatesPersistencePort {
@@ -24,10 +26,20 @@ public class PlatesAdapter implements IPlatesPersistencePort {
     public void updatePlate(Plate plate) {
         PlateEntity existingEntity = platesRepository.findById(plate.getId()).orElse(null);
         if (existingEntity == null) {
-            throw new IllegalArgumentException("Plate not found with ID: " + plate.getId());
+            throw new IllegalArgumentException(PLATE_NOT_FOUND + plate.getId());
         }
         existingEntity.setDescription(plate.getDescription());
         existingEntity.setPrice(plate.getPrice());
+        platesRepository.save(existingEntity);
+    }
+
+    @Override
+    public void changeAvailability(Long plateId) {
+        PlateEntity existingEntity = platesRepository.findById(plateId).orElse(null);
+        if (existingEntity == null) {
+            throw new IllegalArgumentException(PLATE_NOT_FOUND + plateId);
+        }
+        existingEntity.setActive(!existingEntity.getActive());
         platesRepository.save(existingEntity);
     }
 

@@ -21,4 +21,12 @@ public class ControllerAdvisor {
         response.put(MESSAGE, multipleRestaurantValidationExceptions.getErrors());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, String>> handleIllegalArgumentException(
+            IllegalArgumentException illegalArgumentException) {
+        Map<String, String> response = new HashMap<>();
+        response.put(MESSAGE, illegalArgumentException.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
 }

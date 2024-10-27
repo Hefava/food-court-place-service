@@ -13,6 +13,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static foot_court.place.domain.utils.PlaceUtils.ROLE_ADMINISTRATOR;
+import static foot_court.place.domain.utils.PlaceUtils.ROLE_OWNER;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -32,9 +35,10 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers("/restaurants/create-restaurant").hasRole("ADMINISTRATOR")
-                        .requestMatchers("/plates/create-plate").hasRole("OWNER")
-                        .requestMatchers("/plates/update-plate").hasRole("OWNER")
+                        .requestMatchers("/restaurants/create-restaurant").hasRole(ROLE_ADMINISTRATOR)
+                        .requestMatchers("/plates/create-plate").hasRole(ROLE_OWNER)
+                        .requestMatchers("/plates/update-plate").hasRole(ROLE_OWNER)
+                        .requestMatchers("/plates/change-availability/**").hasRole(ROLE_OWNER)
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception

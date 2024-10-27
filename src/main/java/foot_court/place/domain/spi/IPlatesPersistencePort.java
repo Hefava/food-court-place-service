@@ -6,4 +6,5 @@ public interface IPlatesPersistencePort {
     void savePlate(Plate plate);
     void updatePlate(Plate plate);
     Plate findPlateById(Long id);
+    void changeAvailability(Long plateId);
 }
