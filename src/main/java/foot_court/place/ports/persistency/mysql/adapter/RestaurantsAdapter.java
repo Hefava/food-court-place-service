@@ -24,4 +24,11 @@ public class RestaurantsAdapter implements IRestaurantsPersistencePort {
     public boolean existsByName(String name) {
         return restaurantRepository.existsByName(name);
     }
+
+    @Override
+    public Restaurant findRestaurantById(Long id) {
+        return restaurantRepository.findById(id)
+                .map(restaurantMapper::toDomain)
+                .orElse(null);
+    }
 }
