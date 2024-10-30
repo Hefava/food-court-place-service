@@ -2,6 +2,7 @@ package foot_court.place.domain.api.usecase;
 
 import foot_court.place.domain.api.IRestaurantsServicePort;
 import foot_court.place.domain.exception.MultipleRestaurantValidationExceptions;
+import foot_court.place.domain.model.Plate;
 import foot_court.place.domain.model.Restaurant;
 import foot_court.place.domain.spi.IRestaurantsPersistencePort;
 import foot_court.place.domain.spi.IUserPersistencePort;
@@ -37,6 +38,14 @@ public class RestaurantsUseCase implements IRestaurantsServicePort {
         SortUtil sortDomain = new SortUtil(ORDER_DEFAULT, direction);
         PageRequestUtil pageRequestDomain = new PageRequestUtil(page, size);
         return restaurantsPersistencePort.getRestaurants(sortDomain, pageRequestDomain);
+    }
+
+    @Override
+    public PagedResult<Plate> getMenu(Long restaurantId, Long categoryId, String order, int page, int size) {
+        SortUtil.Direction direction = order.equalsIgnoreCase(ORDER_DEFAULT_ASC) ? SortUtil.Direction.ASC : SortUtil.Direction.DESC;
+        SortUtil sortDomain = new SortUtil(ORDER_DEFAULT, direction);
+        PageRequestUtil pageRequestDomain = new PageRequestUtil(page, size);
+        return restaurantsPersistencePort.getMenu(restaurantId, categoryId, sortDomain, pageRequestDomain);
     }
 
     private void validateInfo(Restaurant restaurant) {
