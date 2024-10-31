@@ -41,6 +41,7 @@ public class SecurityConfig {
                         .requestMatchers("/plates/change-availability/**").hasRole(ROLE_OWNER)
                         .requestMatchers("/restaurants/get-restaurants").permitAll()
                         .requestMatchers("/restaurants/get-menu").permitAll()
+                        .requestMatchers("/orders/create-order").hasRole(ROLE_OWNER)
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception

@@ -1,5 +1,6 @@
 package foot_court.place.infrastructure.exceptionhandler;
 
+import foot_court.place.domain.exception.ClientHasActiveOrderException;
 import foot_court.place.domain.exception.MultipleRestaurantValidationExceptions;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,14 @@ public class ControllerAdvisor {
             MultipleRestaurantValidationExceptions multipleRestaurantValidationExceptions) {
         Map<String, List<String>> response = new HashMap<>();
         response.put(MESSAGE, multipleRestaurantValidationExceptions.getErrors());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(ClientHasActiveOrderException.class)
+    public ResponseEntity<Map<String, String>> handleClientHasActiveOrderException(
+            ClientHasActiveOrderException clientHasActiveOrderException) {
+        Map<String, String> response = new HashMap<>();
+        response.put(MESSAGE, clientHasActiveOrderException.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 

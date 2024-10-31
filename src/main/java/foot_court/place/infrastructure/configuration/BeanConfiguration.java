@@ -1,9 +1,12 @@
 package foot_court.place.infrastructure.configuration;
 
+import foot_court.place.domain.api.IOrderServicePort;
 import foot_court.place.domain.api.IPlatesServicePort;
 import foot_court.place.domain.api.IRestaurantsServicePort;
+import foot_court.place.domain.api.usecase.OrderUseCase;
 import foot_court.place.domain.api.usecase.PlatesUseCase;
 import foot_court.place.domain.api.usecase.RestaurantsUseCase;
+import foot_court.place.domain.spi.IOrderPersistencePort;
 import foot_court.place.domain.spi.IPlatesPersistencePort;
 import foot_court.place.domain.spi.IRestaurantsPersistencePort;
 import foot_court.place.domain.spi.IUserPersistencePort;
@@ -27,10 +30,16 @@ public class BeanConfiguration {
     private final IRestaurantsPersistencePort restaurantsPersistencePort;
     private final IUserPersistencePort userPersistencePort;
     private final IPlatesPersistencePort platesPersistencePort;
+    private final IOrderPersistencePort orderPersistencePort;
 
     @Bean
     public IRestaurantsServicePort restaurantsServicePort() {
         return new RestaurantsUseCase(restaurantsPersistencePort, userPersistencePort);
+    }
+
+    @Bean
+    IOrderServicePort orderPersistencePort() {
+        return new OrderUseCase(orderPersistencePort, userPersistencePort);
     }
 
     @Bean
