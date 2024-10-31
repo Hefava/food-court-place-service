@@ -17,6 +17,12 @@ public class RestaurantUtils {
     public static final String INVALID_PHONE_NUMBER = "Invalid phone number";
     public static final String INVALID_OWNER = "Invalid owner";
 
+    // SQL query constant
+    public static final String PLATES_QUERY = "SELECT * FROM plates p " +
+            "WHERE p.restaurant_id = :restaurantId " +
+            "AND (:categoryId IS NULL OR p.category_id = :categoryId)";
+
+
     private RestaurantUtils() {
         throw new AssertionError("Cannot instantiate this class");
     }
