@@ -39,6 +39,15 @@ public class RestaurantsController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @PostMapping("/enter-employee")
+    public ResponseEntity<Void> enterEmployee(
+            @RequestParam @Parameter Long ownerId,
+            @RequestParam @Parameter Long restaurantId,
+            @RequestParam @Parameter Long employeeId) {
+        restaurantServicePort.enterEmployee(ownerId, restaurantId, employeeId);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
     @GetMapping("/get-restaurants")
     public ResponseEntity<PagedResult<RestaurantsResponse>> getRestaurants(
             @RequestParam(defaultValue = ORDER_DEFAULT_ASC) @Parameter String order,

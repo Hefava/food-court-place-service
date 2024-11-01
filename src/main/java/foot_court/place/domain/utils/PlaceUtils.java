@@ -6,6 +6,10 @@ public class PlaceUtils {
 
     public static final String ROLE_OWNER = "OWNER";
 
+    public static final String ROLE_EMPLOYEE = "EMPLOYEE";
+
+    public static final String ROLE_CUSTOMER = "CLIENT";
+
     public static final String ORDER_DEFAULT_ASC = "asc";
 
     public static final String ORDER_DEFAULT = "name";

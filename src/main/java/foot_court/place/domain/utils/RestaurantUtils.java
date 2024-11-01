@@ -16,6 +16,7 @@ public class RestaurantUtils {
     public static final String INVALID_NIT = "Invalid NIT";
     public static final String INVALID_PHONE_NUMBER = "Invalid phone number";
     public static final String INVALID_OWNER = "Invalid owner";
+    public static final String NOT_OWNER = "User is not the owner of the restaurant";
 
     // SQL query constant
     public static final String PLATES_QUERY = "SELECT * FROM plates p " +

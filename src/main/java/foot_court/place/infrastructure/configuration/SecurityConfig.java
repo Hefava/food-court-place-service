@@ -13,8 +13,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static foot_court.place.domain.utils.PlaceUtils.ROLE_ADMINISTRATOR;
-import static foot_court.place.domain.utils.PlaceUtils.ROLE_OWNER;
+import static foot_court.place.domain.utils.PlaceUtils.*;
 
 @Configuration
 @EnableWebSecurity
@@ -41,7 +40,9 @@ public class SecurityConfig {
                         .requestMatchers("/plates/change-availability/**").hasRole(ROLE_OWNER)
                         .requestMatchers("/restaurants/get-restaurants").permitAll()
                         .requestMatchers("/restaurants/get-menu").permitAll()
-                        .requestMatchers("/orders/create-order").hasRole(ROLE_OWNER)
+                        .requestMatchers("/orders/create-order").hasRole(ROLE_CUSTOMER)
+                        .requestMatchers("/orders/view-orders").hasRole(ROLE_EMPLOYEE)
+                        .requestMatchers("/restaurants/enter-employee").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception
