@@ -23,7 +23,7 @@ public class OrderEntity {
     @Column(name = "date_order", nullable = false)
     private LocalDateTime dateOrder;
 
-    @Column(nullable = false, length = 10)
+    @Column(nullable = false, length = 20)
     private String status;
 
     @Column(name = "chef_id", nullable = false, length = 10)

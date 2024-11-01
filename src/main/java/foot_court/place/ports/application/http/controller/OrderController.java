@@ -44,4 +44,11 @@ public class OrderController {
 
         return ResponseEntity.ok(response);
     }
+
+    @PutMapping("/assign-order")
+    public ResponseEntity<Void> assingOrder(
+            @RequestParam @Parameter Long orderId) {
+        orderServicePort.updateOrderStatus(orderId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

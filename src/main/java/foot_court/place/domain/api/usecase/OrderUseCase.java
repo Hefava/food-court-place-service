@@ -44,6 +44,16 @@ public class OrderUseCase implements IOrderServicePort {
         return orderPersistencePort.viewOrders(status, restaurantId, pageRequestDomain);
     }
 
+    @Override
+    public void updateOrderStatus(Long orderId) {
+        Long chefId = userPersistencePort.getUserId();
+        Order order = orderPersistencePort.getOrderById(orderId);
+        validateOrderStatus(order);
+        validateChefAccessToOrder(order, chefId);
+        assignOrderToChef(order, chefId);
+        orderPersistencePort.updateOrderStatus(order);
+    }
+
     private boolean verifyHasActiveOrder(Long clientId) {
         return orderPersistencePort.hasActiveOrder(clientId);
     }
@@ -56,5 +66,23 @@ public class OrderUseCase implements IOrderServicePort {
         order.setDateOrder(LocalDateTime.now());
         order.setStatus(ORDER_PENDING);
         return order;
+    }
+
+    private void validateOrderStatus(Order order) {
+        if (orderPersistencePort.verifyOrderStatus(order.getId())) {
+            throw new IllegalArgumentException(ORDER_STATUS_ERROR);
+        }
+    }
+
+    private void validateChefAccessToOrder(Order order, Long chefId) {
+        Long chefRestaurantId = restaurantsPersistencePort.getRestaurantOfEmployee(chefId);
+        if (!order.getRestaurantId().equals(chefRestaurantId)) {
+            throw new IllegalArgumentException(NOT_RESTAURANT_CHEF);
+        }
+    }
+
+    private void assignOrderToChef(Order order, Long chefId) {
+        order.setChefId(chefId);
+        order.setStatus(ORDER_PREPARATION);
     }
 }

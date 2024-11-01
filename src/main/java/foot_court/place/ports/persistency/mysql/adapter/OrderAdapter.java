@@ -35,6 +35,12 @@ public class OrderAdapter implements IOrderPersistencePort {
     }
 
     @Override
+    public boolean verifyOrderStatus(Long orderId) {
+        OrderEntity orderEntity = orderRepository.findById(orderId).orElseThrow();
+        return orderEntity.getStatus().equals(ORDER_PENDING);
+    }
+
+    @Override
     public void createOrder(Order order, List<OrderPlates> orderPlates) {
         OrderEntity orderEntity = orderEntityMapper.toEntity(order);
         orderRepository.save(orderEntity);
@@ -48,6 +54,17 @@ public class OrderAdapter implements IOrderPersistencePort {
                 .toList();
 
         orderPlatesRepository.saveAll(orderPlatesEntities);
+    }
+
+    @Override
+    public void updateOrderStatus(Order order) {
+        OrderEntity orderEntity = orderEntityMapper.toEntity(order);
+        orderRepository.save(orderEntity);
+    }
+
+    @Override
+    public Order getOrderById(Long orderId) {
+        return orderEntityMapper.toModel(orderRepository.findById(orderId).orElseThrow());
     }
 
     @Override

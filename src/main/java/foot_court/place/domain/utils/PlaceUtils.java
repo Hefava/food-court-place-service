@@ -14,13 +14,21 @@ public class PlaceUtils {
 
     public static final String ORDER_DEFAULT = "name";
 
-    public static final String ORDER_PENDING = "Pendiente";
+    public static final String ORDER_PENDING = "pendiente";
 
-    public static final String ORDER_PREPARATION = "Preparacion";
+    public static final String ORDER_PREPARATION = "en_preparacion";
 
-    public static final String ORDER_READY = "Listo";
+    public static final String ORDER_READY = "listo";
+
+    public static final String ORDER_DELIVERED = "entregado";
+
+    public static final String ORDER_CANCELLED = "cancelado";
 
     public static final String CLIENT_HAS_ACTIVE_ORDER = "Client has active order";
+
+    public static final String ORDER_STATUS_ERROR = "Order status error";
+
+    public static final String NOT_RESTAURANT_CHEF = "You are not the chef of this restaurant";
 
     private PlaceUtils() {
         throw new AssertionError("Cannot instantiate this class");
