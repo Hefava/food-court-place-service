@@ -14,5 +14,6 @@ public interface IOrderPersistencePort {
     void createOrder(Order order, List<OrderPlates> orderPlates);
     void updateOrderStatus(Order order);
     Order getOrderById(Long orderId);
+    Order getOrderByChefId(Long chefId);
     PagedResult<OrdersWithPlates> viewOrders(String status, Long restaurantId,PageRequestUtil pageRequestDomain);
 }

@@ -22,4 +22,9 @@ public class UserFeignAdapter implements IUserPersistencePort {
         UserDetails userId = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return Long.valueOf(userId.getUsername());
     }
+
+    @Override
+    public String getPhoneNumber(Long userID) {
+        return userFeign.getPhoneNumber(userID);
+    }
 }

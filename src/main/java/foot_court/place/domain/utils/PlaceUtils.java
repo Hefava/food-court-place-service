@@ -30,6 +30,8 @@ public class PlaceUtils {
 
     public static final String NOT_RESTAURANT_CHEF = "You are not the chef of this restaurant";
 
+    public static final String NOT_CHEF_ORDER = "You are not the chef of this order";
+
     private PlaceUtils() {
         throw new AssertionError("Cannot instantiate this class");
     }

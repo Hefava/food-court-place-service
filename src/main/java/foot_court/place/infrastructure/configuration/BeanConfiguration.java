@@ -6,10 +6,7 @@ import foot_court.place.domain.api.IRestaurantsServicePort;
 import foot_court.place.domain.api.usecase.OrderUseCase;
 import foot_court.place.domain.api.usecase.PlatesUseCase;
 import foot_court.place.domain.api.usecase.RestaurantsUseCase;
-import foot_court.place.domain.spi.IOrderPersistencePort;
-import foot_court.place.domain.spi.IPlatesPersistencePort;
-import foot_court.place.domain.spi.IRestaurantsPersistencePort;
-import foot_court.place.domain.spi.IUserPersistencePort;
+import foot_court.place.domain.spi.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,6 +28,7 @@ public class BeanConfiguration {
     private final IUserPersistencePort userPersistencePort;
     private final IPlatesPersistencePort platesPersistencePort;
     private final IOrderPersistencePort orderPersistencePort;
+    private final IMessagingFeignPersistencePort messagingFeignPersistencePort;
 
     @Bean
     public IRestaurantsServicePort restaurantsServicePort() {
@@ -39,7 +37,7 @@ public class BeanConfiguration {
 
     @Bean
     IOrderServicePort orderPersistencePort() {
-        return new OrderUseCase(orderPersistencePort, userPersistencePort, restaurantsPersistencePort);
+        return new OrderUseCase(orderPersistencePort, userPersistencePort, restaurantsPersistencePort, messagingFeignPersistencePort);
     }
 
     @Bean

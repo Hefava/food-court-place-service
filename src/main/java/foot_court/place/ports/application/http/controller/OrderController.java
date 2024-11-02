@@ -51,4 +51,10 @@ public class OrderController {
         orderServicePort.updateOrderStatus(orderId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @PutMapping("/order-ready")
+    public ResponseEntity<Void> orderReady() {
+        orderServicePort.orderReady();
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

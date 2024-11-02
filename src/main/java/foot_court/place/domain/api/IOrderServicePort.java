@@ -10,4 +10,5 @@ public interface IOrderServicePort {
     void createOrder(Long restaurantId, List<OrderPlates> orderPlates);
     PagedResult<OrdersWithPlates> viewOrders(String status, int page, int size);
     void updateOrderStatus(Long orderId);
+    void orderReady();
 }

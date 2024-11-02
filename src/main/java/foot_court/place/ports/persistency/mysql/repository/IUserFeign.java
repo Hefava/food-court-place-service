@@ -16,4 +16,7 @@ public interface IUserFeign {
 
     @PostMapping("/auth/validate-token/{token}")
     UserResponse validateToken(@PathVariable String token);
+
+    @GetMapping("/sign-up/get-phone-number")
+    String getPhoneNumber(@RequestParam Long userID);
 }

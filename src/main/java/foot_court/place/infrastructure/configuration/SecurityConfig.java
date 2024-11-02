@@ -43,6 +43,7 @@ public class SecurityConfig {
                         .requestMatchers("/orders/create-order").hasRole(ROLE_CUSTOMER)
                         .requestMatchers("/orders/view-orders").hasRole(ROLE_EMPLOYEE)
                         .requestMatchers("/orders/assign-order").hasRole(ROLE_EMPLOYEE)
+                        .requestMatchers("/orders/order-ready").hasRole(ROLE_EMPLOYEE)
                         .requestMatchers("/restaurants/enter-employee").permitAll()
                         .anyRequest().authenticated()
                 )

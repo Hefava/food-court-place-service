@@ -4,6 +4,7 @@ import foot_court.place.domain.api.IOrderServicePort;
 import foot_court.place.domain.exception.ClientHasActiveOrderException;
 import foot_court.place.domain.model.Order;
 import foot_court.place.domain.model.OrderPlates;
+import foot_court.place.domain.spi.IMessagingFeignPersistencePort;
 import foot_court.place.domain.spi.IOrderPersistencePort;
 import foot_court.place.domain.spi.IRestaurantsPersistencePort;
 import foot_court.place.domain.spi.IUserPersistencePort;
@@ -20,11 +21,13 @@ public class OrderUseCase implements IOrderServicePort {
     private final IOrderPersistencePort orderPersistencePort;
     private final IUserPersistencePort userPersistencePort;
     private final IRestaurantsPersistencePort restaurantsPersistencePort;
+    private final IMessagingFeignPersistencePort messagingFeignPersistencePort;
 
-    public OrderUseCase(IOrderPersistencePort orderPersistencePort, IUserPersistencePort userPersistencePort, IRestaurantsPersistencePort restaurantsPersistencePort) {
+    public OrderUseCase(IOrderPersistencePort orderPersistencePort, IUserPersistencePort userPersistencePort, IRestaurantsPersistencePort restaurantsPersistencePort, IMessagingFeignPersistencePort messagingFeignPersistencePort) {
         this.orderPersistencePort = orderPersistencePort;
         this.userPersistencePort = userPersistencePort;
         this.restaurantsPersistencePort = restaurantsPersistencePort;
+        this.messagingFeignPersistencePort = messagingFeignPersistencePort;
     }
 
     @Override
@@ -52,6 +55,16 @@ public class OrderUseCase implements IOrderServicePort {
         validateChefAccessToOrder(order, chefId);
         assignOrderToChef(order, chefId);
         orderPersistencePort.updateOrderStatus(order);
+    }
+
+    @Override
+    public void orderReady() {
+        Long chefId = userPersistencePort.getUserId();
+        Order order = orderPersistencePort.getOrderByChefId(chefId);
+        validateOrderChef(order, chefId);
+        validateOrderStatusForUpdate(order);
+        updateOrderToReady(order);
+        sendNotificationToClient(order);
     }
 
     private boolean verifyHasActiveOrder(Long clientId) {
@@ -84,5 +97,27 @@ public class OrderUseCase implements IOrderServicePort {
     private void assignOrderToChef(Order order, Long chefId) {
         order.setChefId(chefId);
         order.setStatus(ORDER_PREPARATION);
+    }
+
+    private void validateOrderChef(Order order, Long chefId) {
+        if (!order.getChefId().equals(chefId)) {
+            throw new IllegalArgumentException(NOT_CHEF_ORDER);
+        }
+    }
+
+    private void validateOrderStatusForUpdate(Order order) {
+        if (!ORDER_PREPARATION.equals(order.getStatus())) {
+            throw new IllegalArgumentException(ORDER_STATUS_ERROR);
+        }
+    }
+
+    private void updateOrderToReady(Order order) {
+        order.setStatus(ORDER_READY);
+        orderPersistencePort.updateOrderStatus(order);
+    }
+
+    private void sendNotificationToClient(Order order) {
+        String phoneNumberOfClient = userPersistencePort.getPhoneNumber(order.getClientId());
+        messagingFeignPersistencePort.sendMessage(phoneNumberOfClient);
     }
 }

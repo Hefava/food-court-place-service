@@ -68,6 +68,11 @@ public class OrderAdapter implements IOrderPersistencePort {
     }
 
     @Override
+    public Order getOrderByChefId(Long chefId) {
+        return orderEntityMapper.toModel(orderRepository.findByChefId(chefId).orElseThrow());
+    }
+
+    @Override
     public PagedResult<OrdersWithPlates> viewOrders(String status, Long restaurantId, PageRequestUtil pageRequestDomain) {
         PageRequest pageRequest = PageRequest.of(pageRequestDomain.getPage(), pageRequestDomain.getSize());
 
