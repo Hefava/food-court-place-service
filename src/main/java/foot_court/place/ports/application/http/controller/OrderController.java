@@ -4,6 +4,7 @@ import foot_court.place.domain.api.IOrderServicePort;
 import foot_court.place.domain.utils.OrdersWithPlates;
 import foot_court.place.domain.utils.pagination.PagedResult;
 import foot_court.place.ports.application.http.dto.ClientOrderRequest;
+import foot_court.place.ports.application.http.dto.OrderDeliveredRequest;
 import foot_court.place.ports.application.http.dto.ViewOrdersResponse;
 import foot_court.place.ports.application.http.mapper.ViewOrdersResponseMapper;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -55,6 +56,13 @@ public class OrderController {
     @PutMapping("/order-ready")
     public ResponseEntity<Void> orderReady() {
         orderServicePort.orderReady();
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/order-delivered")
+    public ResponseEntity<Void> orderDelivered(
+            @RequestBody @Parameter(required = true) OrderDeliveredRequest request) {
+        orderServicePort.orderDelivered(request.getOrderId(), request.getPin());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

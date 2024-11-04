@@ -17,4 +17,9 @@ public class MessagingAdapter implements IMessagingFeignPersistencePort {
         orderReadyRequest.setPhoneNumber(phoneNumber);
         messagingFeign.notifyOrderReady(orderReadyRequest);
     }
+
+    @Override
+    public String getPinByPhoneNumber(String phoneNumber) {
+        return messagingFeign.getPin(phoneNumber);
+    }
 }

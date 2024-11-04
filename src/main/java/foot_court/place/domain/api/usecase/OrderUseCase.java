@@ -67,6 +67,19 @@ public class OrderUseCase implements IOrderServicePort {
         sendNotificationToClient(order);
     }
 
+    @Override
+    public void orderDelivered(Long orderId, String pin) {
+        Long chefId = userPersistencePort.getUserId();
+        Order order = orderPersistencePort.getOrderById(orderId);
+        String phoneNumberOfClient = userPersistencePort.getPhoneNumber(order.getClientId());
+        validateOrderChef(order, chefId);
+        if (!messagingFeignPersistencePort.getPinByPhoneNumber(phoneNumberOfClient).equals(pin)) {
+            throw new IllegalArgumentException(PIN_ERROR);
+        }
+        order.setStatus(ORDER_DELIVERED);
+        orderPersistencePort.updateOrderStatus(order);
+    }
+
     private boolean verifyHasActiveOrder(Long clientId) {
         return orderPersistencePort.hasActiveOrder(clientId);
     }

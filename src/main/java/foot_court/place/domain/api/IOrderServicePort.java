@@ -11,4 +11,5 @@ public interface IOrderServicePort {
     PagedResult<OrdersWithPlates> viewOrders(String status, int page, int size);
     void updateOrderStatus(Long orderId);
     void orderReady();
+    void orderDelivered(Long orderId, String pin);
 }

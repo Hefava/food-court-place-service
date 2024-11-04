@@ -32,6 +32,8 @@ public class PlaceUtils {
 
     public static final String NOT_CHEF_ORDER = "You are not the chef of this order";
 
+    public static final String PIN_ERROR = "Invalid PIN";
+
     private PlaceUtils() {
         throw new AssertionError("Cannot instantiate this class");
     }
