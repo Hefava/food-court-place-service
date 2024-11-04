@@ -9,6 +9,7 @@ import foot_court.place.domain.spi.IOrderPersistencePort;
 import foot_court.place.domain.spi.IRestaurantsPersistencePort;
 import foot_court.place.domain.spi.IUserPersistencePort;
 import foot_court.place.domain.utils.OrdersWithPlates;
+import foot_court.place.domain.utils.PlaceUtils;
 import foot_court.place.domain.utils.pagination.PageRequestUtil;
 import foot_court.place.domain.utils.pagination.PagedResult;
 
@@ -80,6 +81,18 @@ public class OrderUseCase implements IOrderServicePort {
         orderPersistencePort.updateOrderStatus(order);
     }
 
+    @Override
+    public void cancelOrder(Long orderId) {
+        Long clientId = userPersistencePort.getUserId();
+        Order order = orderPersistencePort.getOrderById(orderId);
+
+        validateOrderOwnership(order, clientId);
+        validateOrderStatusForCancellation(order);
+
+        order.setStatus(PlaceUtils.ORDER_CANCELLED);
+        orderPersistencePort.updateOrderStatus(order);
+    }
+
     private boolean verifyHasActiveOrder(Long clientId) {
         return orderPersistencePort.hasActiveOrder(clientId);
     }
@@ -132,5 +145,17 @@ public class OrderUseCase implements IOrderServicePort {
     private void sendNotificationToClient(Order order) {
         String phoneNumberOfClient = userPersistencePort.getPhoneNumber(order.getClientId());
         messagingFeignPersistencePort.sendMessage(phoneNumberOfClient);
+    }
+
+    private void validateOrderOwnership(Order order, Long clientId) {
+        if (!order.getClientId().equals(clientId)) {
+            throw new IllegalArgumentException(NOT_OWNER_OF_ORDER);
+        }
+    }
+
+    private void validateOrderStatusForCancellation(Order order) {
+        if (!ORDER_PENDING.equals(order.getStatus())) {
+            throw new IllegalArgumentException(ORDER_ALREADY_IN_PREPARATION);
+        }
     }
 }

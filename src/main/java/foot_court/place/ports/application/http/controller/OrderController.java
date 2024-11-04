@@ -65,4 +65,11 @@ public class OrderController {
         orderServicePort.orderDelivered(request.getOrderId(), request.getPin());
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @PutMapping("/cancel-order")
+    public ResponseEntity<Void> cancelOrder(
+            @RequestParam @Parameter Long orderId) {
+        orderServicePort.cancelOrder(orderId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

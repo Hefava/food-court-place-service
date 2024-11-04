@@ -34,6 +34,10 @@ public class PlaceUtils {
 
     public static final String PIN_ERROR = "Invalid PIN";
 
+    public static final String NOT_OWNER_OF_ORDER = "You are not the owner of this order";
+
+    public static final String ORDER_ALREADY_IN_PREPARATION = "Sorry, your order is already in preparation and cannot be cancelled.";
+
     private PlaceUtils() {
         throw new AssertionError("Cannot instantiate this class");
     }
