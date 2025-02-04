@@ -108,7 +108,7 @@ public class OrderUseCase implements IOrderServicePort {
     }
 
     private void validateOrderStatus(Order order) {
-        if (orderPersistencePort.verifyOrderStatus(order.getId())) {
+        if (!orderPersistencePort.verifyOrderStatus(order.getId())) {
             throw new IllegalArgumentException(ORDER_STATUS_ERROR);
         }
     }
