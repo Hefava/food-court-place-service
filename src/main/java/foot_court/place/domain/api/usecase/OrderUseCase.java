@@ -53,26 +53,31 @@ public class OrderUseCase implements IOrderServicePort {
     public void updateOrderStatus(Long orderId) {
         Long chefId = userPersistencePort.getUserId();
         Order order = orderPersistencePort.getOrderById(orderId);
+        String lastStatus = order.getStatus();
         validateOrderStatus(order);
         validateChefAccessToOrder(order, chefId);
         assignOrderToChef(order, chefId);
         orderPersistencePort.updateOrderStatus(order);
+        updateOrderTraceability(lastStatus, order);
     }
 
     @Override
     public void orderReady(Long orderId) {
         Long chefId = userPersistencePort.getUserId();
         Order order = orderPersistencePort.getOrderById(orderId);
+        String lastStatus = order.getStatus();
         validateOrderChef(order, chefId);
         validateOrderStatusForUpdate(order);
         updateOrderToReady(order);
         sendNotificationToClient(order);
+        updateOrderTraceability(lastStatus, order);
     }
 
     @Override
     public void orderDelivered(Long orderId, String pin) {
         Long chefId = userPersistencePort.getUserId();
         Order order = orderPersistencePort.getOrderById(orderId);
+        String lastStatus = order.getStatus();
         String phoneNumberOfClient = userPersistencePort.getPhoneNumber(order.getClientId());
         validateOrderChef(order, chefId);
         if (!messagingFeignPersistencePort.getPinByPhoneNumber(phoneNumberOfClient).equals(pin)) {
@@ -80,18 +85,21 @@ public class OrderUseCase implements IOrderServicePort {
         }
         order.setStatus(ORDER_DELIVERED);
         orderPersistencePort.updateOrderStatus(order);
+        updateOrderTraceability(lastStatus, order);
     }
 
     @Override
     public void cancelOrder(Long orderId) {
         Long clientId = userPersistencePort.getUserId();
         Order order = orderPersistencePort.getOrderById(orderId);
+        String lastStatus = order.getStatus();
 
         validateOrderOwnership(order, clientId);
         validateOrderStatusForCancellation(order);
 
         order.setStatus(PlaceUtils.ORDER_CANCELLED);
         orderPersistencePort.updateOrderStatus(order);
+        updateOrderTraceability(lastStatus, order);
     }
 
     private void createOrderTraceability(Order order) {
@@ -106,6 +114,22 @@ public class OrderUseCase implements IOrderServicePort {
         purchaseHistory.setNewStatus(ORDER_PENDING);
         purchaseHistory.setEmployeeId("");
         purchaseHistory.setEmployeeEmail("");
+        traceabilityFeignPersistencePort.generateReport(purchaseHistory);
+    }
+
+    private void updateOrderTraceability(String lastStatus, Order order) {
+        PurchaseHistory purchaseHistory = new PurchaseHistory();
+        Long chefId = userPersistencePort.getUserId();
+        purchaseHistory.setOrderId(order.getId().toString());
+        purchaseHistory.setEmployeeId(chefId.toString());
+        String chefEmail = userPersistencePort.getEmail(chefId);
+        purchaseHistory.setEmployeeEmail(chefEmail);
+        purchaseHistory.setStatusDate(LocalDateTime.now());
+        purchaseHistory.setLastStatus(lastStatus);
+        purchaseHistory.setNewStatus(order.getStatus());
+        purchaseHistory.setClientId(order.getClientId().toString());
+        String clientEmail = userPersistencePort.getEmail(order.getClientId());
+        purchaseHistory.setClientEmail(clientEmail);
         traceabilityFeignPersistencePort.generateReport(purchaseHistory);
     }
 
