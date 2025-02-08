@@ -2,6 +2,7 @@ package foot_court.place.ports.application.http.controller;
 
 import foot_court.place.domain.api.IOrderServicePort;
 import foot_court.place.domain.utils.OrdersWithPlates;
+import foot_court.place.domain.utils.TokenHolder;
 import foot_court.place.domain.utils.pagination.PagedResult;
 import foot_court.place.ports.application.http.dto.ClientOrderRequest;
 import foot_court.place.ports.application.http.dto.OrderDeliveredRequest;
@@ -25,8 +26,11 @@ public class OrderController {
 
     @PostMapping("/create-order")
     public ResponseEntity<Void> createOrder(
+            @RequestHeader("Authorization") @Parameter(required = true) String token,
             @RequestBody @Parameter(required = true) ClientOrderRequest request) {
+        TokenHolder.setToken(token);
         orderServicePort.createOrder(request.getRestaurantId(), request.getPlateOrders());
+        TokenHolder.clear();
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -54,8 +58,9 @@ public class OrderController {
     }
 
     @PutMapping("/order-ready")
-    public ResponseEntity<Void> orderReady() {
-        orderServicePort.orderReady();
+    public ResponseEntity<Void> orderReady(
+            @RequestParam @Parameter Long orderId) {
+        orderServicePort.orderReady(orderId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

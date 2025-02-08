@@ -11,9 +11,8 @@ import java.util.List;
 public interface IOrderPersistencePort {
     boolean hasActiveOrder(Long clientId);
     boolean verifyOrderStatus(Long orderId);
-    void createOrder(Order order, List<OrderPlates> orderPlates);
+    Order createOrder(Order order, List<OrderPlates> orderPlates);
     void updateOrderStatus(Order order);
     Order getOrderById(Long orderId);
-    Order getOrderByChefId(Long chefId);
     PagedResult<OrdersWithPlates> viewOrders(String status, Long restaurantId,PageRequestUtil pageRequestDomain);
 }

@@ -4,12 +4,10 @@ import foot_court.place.domain.api.IOrderServicePort;
 import foot_court.place.domain.exception.ClientHasActiveOrderException;
 import foot_court.place.domain.model.Order;
 import foot_court.place.domain.model.OrderPlates;
-import foot_court.place.domain.spi.IMessagingFeignPersistencePort;
-import foot_court.place.domain.spi.IOrderPersistencePort;
-import foot_court.place.domain.spi.IRestaurantsPersistencePort;
-import foot_court.place.domain.spi.IUserPersistencePort;
+import foot_court.place.domain.spi.*;
 import foot_court.place.domain.utils.OrdersWithPlates;
 import foot_court.place.domain.utils.PlaceUtils;
+import foot_court.place.domain.utils.PurchaseHistory;
 import foot_court.place.domain.utils.pagination.PageRequestUtil;
 import foot_court.place.domain.utils.pagination.PagedResult;
 
@@ -23,12 +21,14 @@ public class OrderUseCase implements IOrderServicePort {
     private final IUserPersistencePort userPersistencePort;
     private final IRestaurantsPersistencePort restaurantsPersistencePort;
     private final IMessagingFeignPersistencePort messagingFeignPersistencePort;
+    private final ITraceabilityFeignPersistencePort traceabilityFeignPersistencePort;
 
-    public OrderUseCase(IOrderPersistencePort orderPersistencePort, IUserPersistencePort userPersistencePort, IRestaurantsPersistencePort restaurantsPersistencePort, IMessagingFeignPersistencePort messagingFeignPersistencePort) {
+    public OrderUseCase(IOrderPersistencePort orderPersistencePort, IUserPersistencePort userPersistencePort, IRestaurantsPersistencePort restaurantsPersistencePort, IMessagingFeignPersistencePort messagingFeignPersistencePort, ITraceabilityFeignPersistencePort traceabilityFeignPersistencePort) {
         this.orderPersistencePort = orderPersistencePort;
         this.userPersistencePort = userPersistencePort;
         this.restaurantsPersistencePort = restaurantsPersistencePort;
         this.messagingFeignPersistencePort = messagingFeignPersistencePort;
+        this.traceabilityFeignPersistencePort = traceabilityFeignPersistencePort;
     }
 
     @Override
@@ -38,7 +38,8 @@ public class OrderUseCase implements IOrderServicePort {
             throw new ClientHasActiveOrderException(CLIENT_HAS_ACTIVE_ORDER);
         }
         Order order = createOrder(clientId, restaurantId);
-        orderPersistencePort.createOrder(order, orderPlates);
+        order = orderPersistencePort.createOrder(order, orderPlates);
+        createOrderTraceability(order);
     }
 
     @Override
@@ -59,9 +60,9 @@ public class OrderUseCase implements IOrderServicePort {
     }
 
     @Override
-    public void orderReady() {
+    public void orderReady(Long orderId) {
         Long chefId = userPersistencePort.getUserId();
-        Order order = orderPersistencePort.getOrderByChefId(chefId);
+        Order order = orderPersistencePort.getOrderById(orderId);
         validateOrderChef(order, chefId);
         validateOrderStatusForUpdate(order);
         updateOrderToReady(order);
@@ -91,6 +92,21 @@ public class OrderUseCase implements IOrderServicePort {
 
         order.setStatus(PlaceUtils.ORDER_CANCELLED);
         orderPersistencePort.updateOrderStatus(order);
+    }
+
+    private void createOrderTraceability(Order order) {
+        PurchaseHistory purchaseHistory = new PurchaseHistory();
+        Long clientId = userPersistencePort.getUserId();
+        purchaseHistory.setOrderId(order.getId().toString());
+        purchaseHistory.setClientId(clientId.toString());
+        String clientEmail = userPersistencePort.getEmail(clientId);
+        purchaseHistory.setClientEmail(clientEmail);
+        purchaseHistory.setStatusDate(LocalDateTime.now());
+        purchaseHistory.setLastStatus("");
+        purchaseHistory.setNewStatus(ORDER_PENDING);
+        purchaseHistory.setEmployeeId("");
+        purchaseHistory.setEmployeeEmail("");
+        traceabilityFeignPersistencePort.generateReport(purchaseHistory);
     }
 
     private boolean verifyHasActiveOrder(Long clientId) {

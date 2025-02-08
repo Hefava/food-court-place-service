@@ -27,4 +27,9 @@ public class UserFeignAdapter implements IUserPersistencePort {
     public String getPhoneNumber(Long userID) {
         return userFeign.getPhoneNumber(userID);
     }
+
+    @Override
+    public String getEmail(Long userID) {
+        return userFeign.getEmail(userID);
+    }
 }

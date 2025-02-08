@@ -38,6 +38,8 @@ public class PlaceUtils {
 
     public static final String ORDER_ALREADY_IN_PREPARATION = "Sorry, your order is already in preparation and cannot be cancelled.";
 
+    public static final String AUTHORIZATION = "Authorization";
+
     private PlaceUtils() {
         throw new AssertionError("Cannot instantiate this class");
     }

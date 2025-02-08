@@ -29,6 +29,7 @@ public class BeanConfiguration {
     private final IPlatesPersistencePort platesPersistencePort;
     private final IOrderPersistencePort orderPersistencePort;
     private final IMessagingFeignPersistencePort messagingFeignPersistencePort;
+    private final ITraceabilityFeignPersistencePort traceabilityFeignPersistencePort;
 
     @Bean
     public IRestaurantsServicePort restaurantsServicePort() {
@@ -37,7 +38,7 @@ public class BeanConfiguration {
 
     @Bean
     IOrderServicePort orderPersistencePort() {
-        return new OrderUseCase(orderPersistencePort, userPersistencePort, restaurantsPersistencePort, messagingFeignPersistencePort);
+        return new OrderUseCase(orderPersistencePort, userPersistencePort, restaurantsPersistencePort, messagingFeignPersistencePort, traceabilityFeignPersistencePort);
     }
 
     @Bean

@@ -4,4 +4,5 @@ public interface IUserPersistencePort {
     Boolean validateRoleOwner(Long id);
     Long getUserId();
     String getPhoneNumber(Long userId);
+    String getEmail(Long userId);
 }
