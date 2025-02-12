@@ -19,6 +19,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 import static foot_court.place.domain.utils.PlaceUtils.ORDER_DEFAULT_ASC;
 
 @RestController
@@ -81,4 +83,11 @@ public class RestaurantsController {
 
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/owner-employees")
+    public ResponseEntity<List<Long>> getEmployeesByOwner(@RequestParam @Parameter String ownerId) {
+        List<Long> employees = restaurantServicePort.getEmployeesByOwnerId(ownerId);
+        return ResponseEntity.ok(employees);
+    }
+
 }

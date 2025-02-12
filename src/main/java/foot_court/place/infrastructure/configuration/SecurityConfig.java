@@ -47,6 +47,7 @@ public class SecurityConfig {
                         .requestMatchers("/orders/order-ready").hasRole(ROLE_EMPLOYEE)
                         .requestMatchers("/orders/order-delivered").hasRole(ROLE_EMPLOYEE)
                         .requestMatchers("/orders/cancel-order").hasRole(ROLE_CUSTOMER)
+                        .requestMatchers("/restaurants/owner-employees").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception

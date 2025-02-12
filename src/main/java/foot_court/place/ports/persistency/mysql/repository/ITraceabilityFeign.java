@@ -10,5 +10,4 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface ITraceabilityFeign {
     @PostMapping("/purchase-history/generate-report")
     Void generateReport(@RequestBody PurchaseHistoryRequest purchaseHistoryRequest);
-
 }

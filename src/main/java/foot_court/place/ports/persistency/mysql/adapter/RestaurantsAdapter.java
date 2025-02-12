@@ -107,4 +107,22 @@ public class RestaurantsAdapter implements IRestaurantsPersistencePort {
                 .map(restaurantMapper::toDomain)
                 .orElse(null);
     }
+
+    @Override
+    public List<Long> findEmployeesByOwnerId(String ownerId) {
+        List<Long> restaurantIds = restaurantRepository.findByOwnerId(ownerId)
+                .stream()
+                .map(RestaurantsEntity::getId)
+                .toList();
+
+        if (restaurantIds.isEmpty()) {
+            return List.of();
+        }
+
+        return restaurantsWorkersRepository.findByRestaurantIdIn(restaurantIds)
+                .stream()
+                .map(RestaurantsWorkersEntity::getEmployedId)
+                .toList();
+    }
+
 }

@@ -63,6 +63,15 @@ public class RestaurantsUseCase implements IRestaurantsServicePort {
         return restaurantsPersistencePort.getMenu(restaurantId, categoryId, sortDomain, pageRequestDomain);
     }
 
+    @Override
+    public List<Long> getEmployeesByOwnerId(String ownerId) {
+        Long ownerIdLong = Long.parseLong(ownerId);
+        if (Boolean.FALSE.equals(userPersistencePort.validateRoleOwner(ownerIdLong))) {
+            throw new InvalidParameterException(NOT_OWNER);
+        }
+        return restaurantsPersistencePort.findEmployeesByOwnerId(ownerId);
+    }
+
     private void validateInfo(Restaurant restaurant) {
         List<String> errors = new ArrayList<>();
         if (restaurantsPersistencePort.existsByName(restaurant.getName())) {

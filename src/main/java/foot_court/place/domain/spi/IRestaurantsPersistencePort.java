@@ -7,6 +7,8 @@ import foot_court.place.domain.utils.pagination.PageRequestUtil;
 import foot_court.place.domain.utils.pagination.PagedResult;
 import foot_court.place.domain.utils.pagination.SortUtil;
 
+import java.util.List;
+
 public interface IRestaurantsPersistencePort {
     void registerRestaurant(Restaurant restaurant);
     void enterEmployee(RestaurantsWorkers restaurantsWorkers);
@@ -16,4 +18,5 @@ public interface IRestaurantsPersistencePort {
     PagedResult<Plate> getMenu(Long restaurantId, Long categoryId, SortUtil sortDomain, PageRequestUtil pageRequestDomain);
     boolean existsByName(String name);
     Restaurant findRestaurantById(Long restaurantId);
+    List<Long> findEmployeesByOwnerId(String ownerId);
 }
