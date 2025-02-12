@@ -5,6 +5,9 @@ public class OrderPlates {
     private Long plateId;
     private Integer quantity;
 
+    public OrderPlates() {
+    }
+
     public OrderPlates(Long orderId, Long plateId, Integer quantity) {
         this.orderId = orderId;
         this.plateId = plateId;

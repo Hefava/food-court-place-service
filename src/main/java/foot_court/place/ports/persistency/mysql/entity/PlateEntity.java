@@ -26,7 +26,7 @@ public class PlateEntity {
     private CategoryEntity categoryId;
 
     @Column(nullable = false)
-    private Long price;
+    private Double price;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id")
